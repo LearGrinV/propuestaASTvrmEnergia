@@ -1,0 +1,158 @@
+<div class="grid grid-cols-1 grid-flow-row gap-1 gap-x-1 gap-y-1 w-full">
+    <div class="grid grid-cols-3 grid-flow-row gap-2 gap-x-2 gap-y-2 rounded-2xl w-full">
+        <article class="bg-green-200/10 grid-cell focus:outline-none flex flex-col justify-start shadow rounded-xl p-2">
+            <div class="w-full max-h-full overflow-hidden flex flex-col">
+                <iframe width="100%" height="450"
+                    src="https://embed.windy.com/embed2.html?lat=-47.076&lon=-76.516&detailLat=-41.471&detailLon=-72.944&width=650&height=450&zoom=5&level=surface&overlay=wind&product=ecmwf&menu=&message=&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"
+                    frameborder="0"></iframe>
+            </div>
+        </article>
+
+        <article
+            class="bg-green-200/10 col-span-2 grid-cell focus:outline-none flex flex-col justify-start shadow rounded-xl p-2">
+            <div class="w-full max-h-full overflow-hidden flex flex-col">
+                <div class="w-full flex justify-end">
+                    <input class="bg-gray-600 bg-opacity-50 h-10 p-2 m-2 w-full text-white placeholder:text-gray-300" type="text"
+                        [(ngModel)]="searchText" (input)="filtrarCentros()" placeholder="Buscar centro..." />
+                </div>
+
+                <table class="table-auto w-full h-full max-h-[680px] min-h-[50px] text-sm text-left text-gray-400">
+                    <thead class="bg-gray-700 text-gray-400 ">
+                        <tr>
+                            <th class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                Empresa
+                            </th>
+                            <th class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                Tipo Pontón
+                            </th>
+                            <th class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                Codigo
+                            </th>
+                            <th class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                Nombre
+                            </th>
+                            <th class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                Descripción
+                            </th>
+                            <th class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                Estado
+                            </th>
+                            <th class="px-6 py-3 text-xs font-medium uppercase tracking-wider">
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-transparent border-b border-transparent">
+                        <tr *ngIf="paginatedCentros.length == 0">
+                            <td colspan="7" class="text-gray-400 text-center p-4">No hay datos</td>
+                        </tr>
+                        <tr *ngFor="let centro of paginatedCentros; let i = index">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                                {{centro.nombreEmpresa}}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                                {{centro.tipoPonton}}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                                {{centro.codigo}}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                                {{centro.nombreCentro}}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-white">
+                                {{centro.descripcion}}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <span class="p-2 text-white rounded-xl"
+                                    [ngClass]="centro.estado != 'Activo' ? 'bg-red-500': 'bg-green-500'">{{centro.estado}}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                        width="24px" fill="#e8eaed"
+                                        class="cursor-pointer hover:scale-110 transition-transform text-red-500"
+                                        [ngClass]="centro.estado != 'Inactivo' ? 'fill-red-500' : 'fill-green-500'"
+                                        (click)="abrirCambiarEstado(centro.estado,i)">
+                                        <path
+                                            d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-84 31.5-156.5T197-763l56 56q-44 44-68.5 102T160-480q0 134 93 227t227 93q134 0 227-93t93-227q0-67-24.5-125T707-707l56-56q54 54 85.5 126.5T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm-40-360v-440h80v440h-80Z" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                        width="24px" fill="#e8eaed"
+                                        class="cursor-pointer hover:scale-110 transition-transform fill-yellow-500">
+                                        <path
+                                            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.5 56.5T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.5 6t26.5 18l56 57q11 12 17 26.5t6 29.5q0 15-5.5 29.5T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                        width="24px" fill="#e8eaed"
+                                        class="cursor-pointer hover:scale-110 transition-transform fill-red-500"
+                                        (click)="abrirEliminarEstado(i)">
+                                        <path
+                                            d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z" />
+                                    </svg>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Paginación -->
+                <div class="flex justify-end">
+                    <button class="px-4 py-2 mx-1 bg-gray-700 text-white rounded hover:bg-gray-600"
+                        [disabled]="currentPage == 1" [hidden]="currentPage == 1" (click)="changePage(currentPage - 1)">
+                        Anterior
+                    </button>
+                    <button *ngFor="let page of totalPages"
+                        class="px-4 py-2 mx-1 bg-gray-700 text-white rounded hover:bg-gray-600"
+                        [class.bg-blue-600]="currentPage === page" (click)="changePage(page)">
+                        {{ page }}
+                    </button>
+                    <button class="px-4 py-2 mx-1 bg-gray-700 text-white rounded hover:bg-gray-600"
+                        [disabled]="currentPage === totalPages.length" [hidden]="currentPage === totalPages.length"
+                        (click)="changePage(currentPage + 1)">
+                        Siguiente
+                    </button>
+                </div>
+            </div>
+        </article>
+    </div>
+    <div class="grid grid-cols-1 grid-rows-1 grid-flow-row gap-2 gap-x-2 gap-y-2 rounded-2xl w-full">
+        <article class="bg-green-200/10 grid-cell focus:outline-none flex flex-col justify-start shadow rounded-xl p-2">
+            <div class="w-full max-h-[400px] overflow-hidden flex justify-center items-center">
+                <canvas id="canvasInstalados"></canvas>
+            </div>
+        </article>
+
+    </div>
+</div>
+
+
+<div class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4" id="modalConfirmacionEstado">
+    <div class="bg-white rounded-lg p-6 w-auto">
+        <div class="flex justify-between items-center mb-4 gap-5">
+            <h2 class="text-xl">¿ Esta seguro que desea {{estadoCentro}} el centro ?</h2>
+            <svg xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="24px" class="cursor-pointer hover:scale-110 hocer:fill-gray-700" (click)="cerrarCambiarEstado()">
+                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+            </svg>
+        </div>
+        <div class="grid gap-10 mt-5">
+            <a class="p-2 rounded-xl cursor-pointer text-white text-center"
+                [ngClass]="estadoCentro == 'encender' ? 'bg-green-500' : 'bg-red-500'"
+                (click)="cambiarEstado()">
+                {{estadoCentro | titlecase}}
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4" id="modalConfirmacionEliminar">
+    <div class="bg-white rounded-lg p-6 w-auto">
+        <div class="flex justify-between items-center mb-4 gap-5">
+            <h2 class="text-xl">¿ Esta seguro que desea eliminar el centro ?</h2>
+            <svg xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="24px" class="cursor-pointer hover:scale-110 hocer:fill-gray-700" (click)="cerrarEliminarEstado()">
+                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/>
+            </svg>
+        </div>
+        <div class="grid gap-10 mt-5">
+            <a class="p-2 rounded-xl cursor-pointer bg-red-500 text-white text-center" (click)="eliminarCentro()">Eliminar</a>
+        </div>
+    </div>
+</div>
